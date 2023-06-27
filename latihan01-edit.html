@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Latihan Json Edit Data</title>
+</head>
+<body>
+    
+    <div class="container">
+        <h3>Form Data</h3>
+        Nama:
+        <input type="text" id="nama"><br>
+        Email:
+        <input type="email" id="email"><br>
+        Username:
+        <input type="text" id="uname"><br>
+        Password:
+        <input type="password" id="pw1"><br>
+        Verifikasi Password:
+        <input type="password" id="pw2"><br>
+        <button type="button" id="cmdupdate" onclick="UpdateData()">Update</button>
+    </div>
+
+    <script>
+        const qstring = window.location.search;
+
+        const pr = new URLSearchParams(qstring);
+        let prid = pr.get('id');
+
+        const jsHTTP = new XMLHttpRequest();
+        let cx = "https://webpro.ptov.my.id/api/curduser.php?aksi=get&q="+prid;
+        // console.log(cx);
+        jsHTTP.open("GET",cx);
+        jsHTTP.send();
+        jsHTTP.onload = function(){
+            const dta = JSON.parse(this.responseText);
+            document.getElementById("nama").value = dta.isi[0][0]; 
+            document.getElementById("email").value = dta.isi[0][1];
+            document.getElementById("uname").value = dta.isi[0][2];
+            // document.getElementById("pw1").value = dta.isi[0][3];
+            // document.getElementById("pw2").value = dta.isi[0][4];
+            // console.log(dta);
+        }
+        function UpdateData(){
+            let nm = document.getElementById("nama").value;
+            let ema = document.getElementById("email").value;
+            let usr = document.getElementById("uname").value;
+            let p1 = document.getElementById("pw1").value;
+            let p2 = document.getElementById("pw2").value;
+            let params = "nama="+nm+"&email="+ema+"&username="+usr+"&pass1="+p1+"&pass2="+p2;
+            let cx = "https://webpro.ptov.my.id/api/curduser.php?aksi=update";
+
+            const jsHTTP = new XMLHttpRequest();
+            jsHTTP.open("POST",cx,true);
+            jsHTTP.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+            jsHTTP.send(params);
+
+            jsHTTP.onload = function(){
+                const dta = JSON.parse(this.responseText);
+                console.log(dta);
+            }
+        }
+    </script>
+</body>
+</html>
